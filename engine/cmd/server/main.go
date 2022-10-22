@@ -1,41 +1,33 @@
 package main
 
 import (
-	"encoding/json"
-	"engine/internal/core/entity"
-	"fmt"
-	"io"
+	"engine/infrastructure/config"
+	"engine/internal/adapter/repository"
+	"engine/internal/core/usecase/schedule"
+	"engine/internal/core/usecase/user"
+	"engine/internal/transport/http"
 	"log"
-	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
-func parseBody(body io.ReadCloser, object any) error {
-	decoder := json.NewDecoder(body)
-	decoder.DisallowUnknownFields()
+func main() {
+	config := config.Config{Port: 2513, IsDebug: true}
 
-	return decoder.Decode(object)
-}
+	repository := repository.NewRepositoryManager()
 
-func UploadNewSchedule(w http.ResponseWriter, r *http.Request) {
-	statusCode := http.StatusCreated
-	defer log.Println(r.URL.Path, r.Method, statusCode)
+	scheduleUseCase := schedule.NewScheduleUseCase(repository)
+	userUseCase := user.NewUserUseCase(repository)
 
-	schedule := entity.Schedule{}
+	server, err := http.NewHttpServer(
+		config,
+		scheduleUseCase,
+		userUseCase,
+	)
 
-	err := parseBody(r.Body, &schedule)
 	if err != nil {
-		fmt.Println(err)
-		statusCode = http.StatusBadRequest
+		log.Fatal("Error initialize server:", err)
 	}
 
-	w.WriteHeader(statusCode)
-}
-
-func main() {
-
-	router := mux.NewRouter()
-	router.HandleFunc("/upload", UploadNewSchedule).Methods("POST")
-	http.ListenAndServe(":2513", router)
+	if err := server.Start(); err != nil {
+		log.Fatal("Server error:", err)
+	}
 }

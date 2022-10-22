@@ -12,12 +12,12 @@ if __name__ == "__main__":
     while True:
         try:
          response = requests.patch(
-            f"http://{server_host}/upload", json=schedules)
+            f"http://{server_host}/schedule/upload", json=schedules)
         except Exception as e:
             print("failed to send:", e)
             sleep(5)
-            continue
-       
+            # continue
+        exit(1)
         code = response.status_code
         if code < 300 and code >= 200:
             break

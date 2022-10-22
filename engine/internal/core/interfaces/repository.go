@@ -6,8 +6,15 @@ import (
 
 type RepositoryManager interface {
 	GetScheduleRepository() ScheduleRepository
+	GetUserRepository() UserRepository
 }
 
 type ScheduleRepository interface {
-	GetDay(weekValue entity.WeekValue, weekDay entity.Weekday, groupId int) (entity.Day, error)
+	Create([]entity.Schedule) error
+	GetDay(weekType entity.WeekType, weekDay entity.Weekday, groupId int) (entity.Day, error)
+	GetGroupId(groupName string) *int
+}
+
+type UserRepository interface {
+	Update(string, int) error
 }

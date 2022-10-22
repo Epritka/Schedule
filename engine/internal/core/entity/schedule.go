@@ -1,12 +1,12 @@
 package entity
 
 type (
-	WeekValue int
-	Weekday   int
+	WeekType int
+	Weekday  int
 )
 
 const (
-	EvenWeek WeekValue = iota
+	EvenWeek WeekType = iota
 	OddWeek
 )
 
@@ -25,7 +25,7 @@ type Schedule struct {
 	EducationalInstitution EducationalInstitution `json:"educationalInstitution"`
 	Faculty                Faculty                `json:"faculty"`
 	Year                   Year                   `json:"year"`
-	Group                  Group                  `json:"groupId"`
+	Group                  Group                  `json:"group"`
 
 	EvenWeek []Day `json:"evenWeek"`
 	OddWeek  []Day `json:"oddWeek"`
