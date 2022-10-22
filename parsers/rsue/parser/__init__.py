@@ -121,7 +121,4 @@ def parse_schedule_page():
 
                 fill_schedule_from_page(response.text, schedule)
                 schedules.append(schedule.to_dict())
-                break
-            break
-        break
     return schedules

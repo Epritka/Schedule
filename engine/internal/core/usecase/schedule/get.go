@@ -20,7 +20,9 @@ func (usecase *ScheduleUseCase) GetDay(date time.Time, groupId int) (entity.Day,
 
 	scheduleRepo := usecase.repository.GetScheduleRepository()
 
-	day, err := scheduleRepo.GetDay(entity.WeekType(thisWeek%2), getWeekDay(date), groupId)
+	weekDay := getWeekDay(date)
+	day, err := scheduleRepo.GetDay(entity.WeekType(thisWeek%2), weekDay, groupId)
+	day.Number = (*int)(&weekDay)
 
 	if err != nil {
 		return day, err

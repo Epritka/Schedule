@@ -63,7 +63,7 @@ type Lesson struct {
 	Type           string `json:"type"`
 	Teacher        string `json:"teacher"`
 	Auditorium     string `json:"auditorium"`
-	SubGroupNumber *int   `json:"subGroupNumber"`
+	SubGroupNumber *int   `json:"subGroupNumber,omitempty"`
 }
 
 type Time struct {

@@ -21,9 +21,14 @@ func (h *handlers) Login(w http.ResponseWriter, r *http.Request) {
 
 	id := h.userUseCase.Update(lr.Login, lr.GroupName)
 
+	if id == nil {
+		httpassistant.Reply(w, r, http.StatusNotFound, nil)
+		return
+	}
+
 	userInfo := map[string]int{
 		"groupId": *id,
 	}
 
-	httpassistant.Reply(w, r, http.StatusCreated, &userInfo)
+	httpassistant.Reply(w, r, http.StatusOK, &userInfo)
 }
