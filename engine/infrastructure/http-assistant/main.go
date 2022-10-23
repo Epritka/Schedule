@@ -18,8 +18,12 @@ func Reply(w http.ResponseWriter, r *http.Request, statusCode int, data any) {
 	w.WriteHeader(statusCode)
 
 	if data != nil {
-		response := map[string]any{
-			"data": data,
+		response := map[string]any{}
+
+		if e, ok := data.(error); ok {
+			response["error"] = e.Error()
+		} else {
+			response["data"] = data
 		}
 
 		bytes, _ := json.Marshal(&response)

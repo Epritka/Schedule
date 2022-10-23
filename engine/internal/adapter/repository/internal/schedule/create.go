@@ -2,6 +2,7 @@ package schedule
 
 import (
 	"engine/internal/core/entity"
+	"fmt"
 	"strings"
 )
 
@@ -27,6 +28,9 @@ func (r *ScheduleRepository) Create(schedules []entity.Schedule) error {
 		r.ids = append(r.ids, s.Group.Name)
 		appendedIndex = len(r.ids) - 1
 		r.groups[strings.ToLower(s.Group.Name)] = appendedIndex
+		if strings.ToLower(s.Group.Name) == "ист-341" {
+			fmt.Println(appendedIndex)
+		}
 		schedule.GroupId = appendedIndex
 
 		for _, w := range s.EvenWeek {

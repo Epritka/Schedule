@@ -78,7 +78,7 @@ class LessonDTO:
         }
 
         if self.SubGroupNumber != None:
-            lesson["subGroupNumber"] = self.SubGroupNumber
+            lesson["subGroupNumber"] = int(self.SubGroupNumber)
 
         return lesson
 

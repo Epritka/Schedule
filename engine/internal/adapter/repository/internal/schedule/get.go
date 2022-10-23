@@ -43,6 +43,8 @@ func (r *ScheduleRepository) GetDay(
 }
 func (r *ScheduleRepository) GetGroupId(groupName string) *int {
 	if id, found := r.groups[strings.ToLower(groupName)]; found {
+		fmt.Println(id)
+		fmt.Println(strings.ToLower(groupName))
 		return &id
 	}
 

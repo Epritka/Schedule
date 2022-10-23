@@ -77,7 +77,7 @@ async def process_callback_today(callback_query: types.CallbackQuery):
 
     if response.status_code == 200:
         data = json.loads(response.text)["data"]
-        text = f"{DAYS[data['number']]}\n"
+        text = f"{DAYS[data['number']]}\n\n"
 
         for l in data["lessons"]:
             text += f"{l['time']['start']}-{l['time']['end']}\n"

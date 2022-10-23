@@ -1,7 +1,9 @@
+from email import charset
 from time import sleep
 from dotenv import load_dotenv
 import requests
 import parser
+import json
 import os
 
 if __name__ == "__main__":
@@ -9,6 +11,10 @@ if __name__ == "__main__":
     server_host = os.getenv("SERVER_HOST")
     schedules = parser.parse_schedule_page()
 
+    file = open("rsue.json", "w+", encoding="utf-8")
+    file.write(json.dump(schedules))
+    file.close()
+    
     print("sending schedules...")
     while True:
         try:
