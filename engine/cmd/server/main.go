@@ -5,7 +5,7 @@ import (
 	"engine/internal/adapter/repository"
 	"engine/internal/core/usecase/schedule"
 	"engine/internal/core/usecase/user"
-	"engine/internal/transport/http"
+	"engine/internal/delivery/http"
 	"log"
 )
 

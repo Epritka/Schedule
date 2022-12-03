@@ -11,8 +11,7 @@ const (
 )
 
 const (
-	day Weekday = iota
-	Monday
+	Monday Weekday = 1 + iota
 	Tuesday
 	Wednesday
 	Thursday

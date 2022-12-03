@@ -12,7 +12,7 @@ if __name__ == "__main__":
     schedules = parser.parse_schedule_page()
 
     file = open("rsue.json", "w+", encoding="utf-8")
-    file.write(json.dump(schedules))
+    file.write(json.dumps(schedules))
     file.close()
     
     print("sending schedules...")

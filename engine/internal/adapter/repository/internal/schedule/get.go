@@ -15,7 +15,7 @@ func (r *ScheduleRepository) GetDay(
 	for _, s := range r.schedules {
 		if s.GroupId == groupId {
 			for _, w := range s.Week {
-				if w.Number == int(weekDay) && w.WeekType == (weekDay != 0) {
+				if w.Number == int(weekDay) && w.WeekType == (weekType != 0) {
 					day := entity.Day{
 						Lessons: make([]entity.Lesson, 0),
 					}

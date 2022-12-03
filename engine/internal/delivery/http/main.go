@@ -3,8 +3,8 @@ package http
 import (
 	"engine/infrastructure/config"
 	"engine/internal/core/interfaces"
-	"engine/internal/transport/http/internal/schedule"
-	"engine/internal/transport/http/internal/user"
+	"engine/internal/delivery/http/internal/schedule"
+	"engine/internal/delivery/http/internal/user"
 	"fmt"
 	"net/http"
 
