@@ -1,4 +1,4 @@
-package schedule
+package day
 
 import "engine/internal/core/interfaces"
 
@@ -6,6 +6,6 @@ type useCase struct {
 	repository interfaces.RepositoryManager
 }
 
-func NewScheduleUseCase(repository interfaces.RepositoryManager) interfaces.ScheduleUseCase {
+func NewScheduleUseCase(repository interfaces.RepositoryManager) interfaces.DayUseCase {
 	return &useCase{repository: repository}
 }

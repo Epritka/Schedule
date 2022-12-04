@@ -2,15 +2,19 @@ package main
 
 import (
 	"engine/infrastructure/config"
-	"engine/internal/adapter/repository"
 	"engine/internal/core/usecase/schedule"
 	"engine/internal/core/usecase/user"
 	"engine/internal/delivery/http"
+	"engine/internal/mock/repository"
 	"log"
 )
 
 func main() {
-	config := config.Config{Port: 2513, IsDebug: true}
+	config, err := config.New("./config.yaml")
+
+	if err != nil {
+		log.Fatal("Error initialize config:", err)
+	}
 
 	repository := repository.NewRepositoryManager()
 

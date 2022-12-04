@@ -30,7 +30,7 @@ func NewHttpServer(
 
 	scheduleHandlers := schedule.NewHandlers(scheduleUseCase)
 
-	router.HandleFunc("/schedule/day", scheduleHandlers.GetScheduleForDay).Methods(http.MethodGet)
+	router.HandleFunc("/schedule/day", scheduleHandlers.GetByDay).Methods(http.MethodGet)
 	router.HandleFunc("/schedule/upload", scheduleHandlers.UploadNewSchedule).Methods(http.MethodPost)
 
 	if config.IsDebug {
@@ -47,5 +47,5 @@ func NewHttpServer(
 }
 
 func (s *HttpServer) Start() error {
-	return http.ListenAndServe(":2513", s.router)
+	return http.ListenAndServe(fmt.Sprintf(":%d", s.port), s.router)
 }

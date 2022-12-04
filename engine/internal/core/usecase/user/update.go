@@ -1,22 +1,29 @@
 package user
 
-import "log"
+import (
+	"engine/internal/core/entity"
+	"errors"
+)
 
-func (usecase *UserUseCase) Update(login, groupName string) *int {
-	scheduleRepo := usecase.repository.GetScheduleRepository()
+func (usecase *useCase) Update(user entity.User) error {
+	groupRepo := usecase.repository.GetGroupRepository()
 	userRepo := usecase.repository.GetUserRepository()
 
-	groupId := scheduleRepo.GetGroupId(groupName)
-
-	if groupId == nil {
-		return groupId
-	}
-
-	err := userRepo.Update(login, *groupId)
+	group, err := groupRepo.Get(user.GroupId)
 
 	if err != nil {
-		log.Println(err)
+		return err
 	}
 
-	return groupId
+	if group == nil {
+		return errors.New("not found")
+	}
+
+	err = userRepo.Update(user)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

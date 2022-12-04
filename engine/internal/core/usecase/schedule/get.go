@@ -15,7 +15,7 @@ func getWeekDay(date time.Time) entity.Weekday {
 	}
 }
 
-func (usecase *ScheduleUseCase) GetDay(date time.Time, groupId int) (entity.Day, error) {
+func (usecase *useCase) GetDay(date time.Time, groupId int) (entity.Day, error) {
 	_, thisWeek := date.ISOWeek()
 
 	scheduleRepo := usecase.repository.GetScheduleRepository()

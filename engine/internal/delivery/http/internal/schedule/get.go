@@ -7,13 +7,13 @@ import (
 	"time"
 )
 
-type dayRequest struct {
+type getByDayRequest struct {
 	GroupId int    `json:"groupId"`
 	Date    string `json:"date"`
 }
 
-func (h *handlers) GetScheduleForDay(w http.ResponseWriter, r *http.Request) {
-	dr := dayRequest{}
+func (h *handlers) GetByDay(w http.ResponseWriter, r *http.Request) {
+	dr := getByDayRequest{}
 
 	err := httpassistant.ParseBody(r.Body, &dr)
 	if err != nil {

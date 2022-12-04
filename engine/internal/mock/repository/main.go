@@ -2,9 +2,13 @@ package repository
 
 import (
 	"engine/internal/core/interfaces"
+	"engine/internal/mock/repository/internal/schedule"
+	"engine/internal/mock/repository/internal/user"
 )
 
 type RepositoryManager struct {
+	userRepository     interfaces.UserRepository
+	scheduleRepository interfaces.ScheduleRepository
 }
 
 func NewRepositoryManager() interfaces.RepositoryManager {
@@ -23,5 +27,8 @@ func (rm *RepositoryManager) GetScheduleRepository() interfaces.ScheduleReposito
 }
 
 func (rm *RepositoryManager) GetUserRepository() interfaces.UserRepository {
-	return NewUserRepository()
+	if rm.userRepository == nil {
+		rm.userRepository = user.NewUserRepository()
+	}
+	return rm.userRepository
 }
