@@ -1,0 +1,30 @@
+version: "3.8"
+
+# name: controlcenter
+#
+services:
+  psql-db:
+    container_name: psql-db
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: ${CC_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${CC_POSTGRES_PASSWORD}
+    volumes:
+      - psql:/var/lib/postgresql/data:rw
+    ports:
+      - 5432:5432
+
+  user-controller:
+    container_name: user-controller
+    pull_policy: always
+    restart: always
+    command: sh -c "./scripts/wait-for.sh psql-db:5432 && ./bin/migrate up && ./bin/server"
+    volumes:
+      # FIXME Use env vars
+      - /etc/tie/cc/env.user-controller:/go/src/app/.env
+    depends_on:
+      - psql-db
+
+volumes:
+  psql:
