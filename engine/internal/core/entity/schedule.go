@@ -29,23 +29,3 @@ type Schedule struct {
 	EvenWeek []Day `json:"evenWeek"`
 	OddWeek  []Day `json:"oddWeek"`
 }
-
-type Day struct {
-	Number  *int     `json:"number,omitempty"`
-	Lessons []Lesson `json:"lessons"`
-}
-
-type Lesson struct {
-	Id             *int   `json:"id,omitempty"`
-	Time           Time   `json:"time"`
-	Name           string `json:"name"`
-	Type           string `json:"type"`
-	Teacher        string `json:"teacher"`
-	Auditorium     string `json:"auditorium"`
-	SubGroupNumber *int   `json:"subGroupNumber,omitempty"`
-}
-
-type Time struct {
-	Start string `json:"start"`
-	End   string `json:"end"`
-}

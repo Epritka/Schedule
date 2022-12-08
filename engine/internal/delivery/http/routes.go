@@ -1,24 +1,19 @@
 package http
 
 import (
-	"engine/internal/delivery/http/internal/user"
+	"engine/internal/delivery/http/internal/day"
 )
 
 func (s *httpServer) SetRoutes() {
-	userHandlers := user.New(s.userUseCase)
+	dayHandlers := day.New(s.dayUseCase)
 
 	apiV1 := s.router.Group("/api/v1/")
 	{
-
-		user := apiV1.Group("/days/")
+		schedule := apiV1.Group("/schedule/")
 		{
-			user.GET("/", userHandlers.GetList)
-			user.POST("/", userHandlers.Create)
-			id := user.Group("/:id/")
+			day := schedule.Group("/day/")
 			{
-				id.GET("/", userHandlers.Get)
-				id.PATCH("/", userHandlers.Update)
-				id.DELETE("/", userHandlers.Delete)
+				day.GET("/", dayHandlers.Get)
 			}
 		}
 	}

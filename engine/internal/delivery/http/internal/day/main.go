@@ -5,11 +5,11 @@ import (
 )
 
 type handlers struct {
-	userUseCase interfaces.UserUseCase
+	dayUseCase interfaces.DayUseCase
 }
 
-func New(userUseCase interfaces.UserUseCase) *handlers {
+func New(dayUseCase interfaces.DayUseCase) *handlers {
 	return &handlers{
-		userUseCase: userUseCase,
+		dayUseCase: dayUseCase,
 	}
 }

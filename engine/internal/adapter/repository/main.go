@@ -69,6 +69,6 @@ func (t *repositoryManager) getConnect() orm.DB {
 	return t.Tx
 }
 
-func (t *repositoryManager) GetUserRepository() interfaces.UserRepository {
-	return NewUserRepository(t.getConnect())
+func (t *repositoryManager) GetDayRepository() interfaces.DayRepository {
+	return NewDayRepository(t.getConnect())
 }

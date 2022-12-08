@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"user-controller/internal/adapter/repository/models"
+	"user-controller/internal/adapter/repository/model"
 	"user-controller/internal/core/entity"
 	"user-controller/internal/core/interfaces"
 
@@ -21,7 +21,7 @@ func NewUserRepository(
 }
 
 func (r *userRepository) Get(id int) (entity.User, error) {
-	user := models.User{
+	user := model.User{
 		Id: id,
 	}
 	err := r.DB.Model(&user).
@@ -36,7 +36,7 @@ func (r *userRepository) Get(id int) (entity.User, error) {
 }
 
 func (r *userRepository) GetByUsername(username string, sourceId int) (entity.User, error) {
-	user := models.User{}
+	user := model.User{}
 
 	query := r.DB.Model(&user).
 		Relation("Roles").
@@ -57,7 +57,7 @@ func (r *userRepository) GetByUsername(username string, sourceId int) (entity.Us
 }
 
 func (r *userRepository) GetList(filters entity.UserFilters) ([]entity.User, int, error) {
-	list := models.UserList{}
+	list := model.UserList{}
 	query := r.DB.Model(&list).
 		Relation("AuthSource").
 		Relation("Roles")
@@ -91,7 +91,7 @@ func (r *userRepository) GetList(filters entity.UserFilters) ([]entity.User, int
 }
 
 func (r *userRepository) Save(user *entity.User) error {
-	model := models.NewUser(*user)
+	model := model.NewUser(*user)
 	exist, err := r.DB.Model(&model).WherePK().Exists()
 	if err != nil {
 		return err
@@ -115,7 +115,7 @@ func (r *userRepository) Save(user *entity.User) error {
 }
 
 func (r *userRepository) Delete(id int) error {
-	_, err := r.DB.Model(&models.User{Id: id}).
+	_, err := r.DB.Model(&model.User{Id: id}).
 		WherePK().
 		Delete()
 	if err != nil {

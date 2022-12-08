@@ -2,37 +2,38 @@ package day
 
 import (
 	"engine/internal/core/entity"
-	"errors"
+	"strconv"
+	"time"
 )
 
-func (usecase *useCase) Get(id int) (*entity.Day, error) {
-	userRepo := usecase.repository.GetUserRepository()
-
-	user, err := userRepo.Get(id)
-
-	if err != nil {
-		return nil, err
+func getWeekDay(date time.Time) entity.Weekday {
+	weekDay := date.Weekday()
+	switch weekDay {
+	case 0:
+		return entity.Saturday
+	default:
+		return entity.Weekday(weekDay)
 	}
-
-	if user == nil {
-		return nil, errors.New("not found")
-	}
-
-	return user, nil
 }
 
-func (usecase *useCase) GetByTgId(tgId int) (*entity.User, error) {
-	userRepo := usecase.repository.GetUserRepository()
+func (usecase *useCase) Get(filters entity.DayFilter) (*entity.Day, error) {
+	dayRepo := usecase.repository.GetDayRepository()
 
-	user, err := userRepo.GetByTgId(tgId)
-
+	intDate, err := strconv.ParseInt(filters.Date, 10, 64)
 	if err != nil {
 		return nil, err
 	}
 
-	if user == nil {
-		return nil, errors.New("not found")
+	date := time.Unix(intDate, 0)
+	_, thisWeek := date.ISOWeek()
+	weekDay := getWeekDay(date)
+
+	day, err := dayRepo.Get(entity.WeekType(thisWeek%2), weekDay, filters.GroupId)
+	day.Number = (*int)(&weekDay)
+
+	if err != nil {
+		return day, err
 	}
 
-	return user, nil
+	return day, nil
 }

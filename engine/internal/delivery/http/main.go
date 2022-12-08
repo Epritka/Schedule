@@ -9,28 +9,28 @@ import (
 )
 
 type httpServer struct {
-	port        int
-	router      *gin.Engine
-	userUseCase interfaces.UserUseCase
+	port       int
+	router     *gin.Engine
+	dayUseCase interfaces.DayUseCase
 }
 
 func New(
-	isProduction bool,
+	isDebug bool,
 	port int,
-	userUseCase interfaces.UserUseCase,
+	dayUseCase interfaces.DayUseCase,
 ) *httpServer {
-	if isProduction {
+	if !isDebug {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
 	if port == 0 {
-		port = 8080
+		port = 2513
 	}
 
 	s := &httpServer{
-		router:      gin.Default(),
-		userUseCase: userUseCase,
-		port:        port,
+		router:     gin.Default(),
+		dayUseCase: dayUseCase,
+		port:       port,
 	}
 	s.SetRoutes()
 	return s

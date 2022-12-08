@@ -4,8 +4,12 @@ import "engine/internal/core/interfaces"
 
 type useCase struct {
 	repository interfaces.RepositoryManager
+	logger     interfaces.Logger
 }
 
-func NewScheduleUseCase(repository interfaces.RepositoryManager) interfaces.ScheduleUseCase {
-	return &useCase{repository: repository}
+func New(repository interfaces.RepositoryManager, logger interfaces.Logger) interfaces.ScheduleUseCase {
+	return &useCase{
+		repository: repository,
+		logger:     logger,
+	}
 }

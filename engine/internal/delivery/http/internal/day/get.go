@@ -12,23 +12,22 @@ type DayFilters struct {
 	Date    string `json:"date"`
 }
 
-func (handlers *handlers) GetList(c *gin.Context) {
+func (handlers *handlers) Get(c *gin.Context) {
 	var filters DayFilters
 
 	c.BindQuery(&filters)
 
-	users, count, err := handlers.userUseCase.GetList(entity.UserFilters{
-		Ids:      filters.Ids,
-		Email:    filters.Email,
-		Limit:    filters.Limit,
-		Offset:   filters.Offset,
-		FullName: filters.FullName,
-	})
+	day, err := handlers.dayUseCase.Get(
+		entity.DayFilter{
+			GroupId: filters.GroupId,
+			Date:    filters.Date,
+		},
+	)
+
 	if err != nil {
 		c.JSON(serializers.BadRequestHttpResponce(err, nil))
 	}
 
-	code, data := serializers.SuccessHttpResponce(users)
-	data["count"] = count
+	code, data := serializers.SuccessHttpResponce(day)
 	c.JSON(code, data)
 }

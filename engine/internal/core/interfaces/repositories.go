@@ -8,9 +8,9 @@ type RepositoryManager interface {
 	RollbackTran() error
 	Transaction(callback func(RepositoryManager) error) error
 
-	GetGroupRepository() GroupRepository
 	GetDayRepository() DayRepository
-	GetScheduleRepository() ScheduleRepository
+	// GetGroupRepository() GroupRepository
+	// GetScheduleRepository() ScheduleRepository
 }
 
 type ScheduleRepository interface {
@@ -23,5 +23,5 @@ type GroupRepository interface {
 }
 
 type DayRepository interface {
-	Get(weekType entity.WeekType, weekDay entity.Weekday, groupId int) (entity.Day, error)
+	Get(weekType entity.WeekType, weekDay entity.Weekday, groupId int) (*entity.Day, error)
 }

@@ -14,5 +14,5 @@ type GroupUseCase interface {
 }
 
 type DayUseCase interface {
-	Get(weekType entity.WeekType, weekDay entity.Weekday, groupId int) (entity.Day, error)
+	Get(entity.DayFilter) (*entity.Day, error)
 }

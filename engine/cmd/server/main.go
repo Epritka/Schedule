@@ -4,12 +4,11 @@ import (
 	"engine/infrastructure/config"
 	"engine/infrastructure/pg"
 	"engine/infrastructure/zap"
-	"engine/internal/adapter/cryptographer"
 	"engine/internal/adapter/logger"
-	"engine/internal/core/usecase/user"
+	"engine/internal/core/usecase/day"
 
+	"engine/internal/adapter/repository"
 	"engine/internal/delivery/http"
-	"engine/internal/repository"
 )
 
 func main() {
@@ -20,23 +19,22 @@ func main() {
 
 	// adapter
 	logger := logger.New(zap)
-	cryptographer := cryptographer.New()
 
 	// repository
 	repositoryManager := repository.NewRepositoryManager(database, nil)
 
 	// core
-	userUseCase := user.New(
+	dayUseCase := day.New(
 		repositoryManager,
-		cryptographer,
 		logger,
 	)
 
 	// delivery
 	httpServer := http.New(
-		!config.IsDebug,
+		config.IsDebug,
 		config.Port,
-		userUseCase,
+		dayUseCase,
 	)
+
 	httpServer.Run()
 }
