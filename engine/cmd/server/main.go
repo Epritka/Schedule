@@ -2,36 +2,41 @@ package main
 
 import (
 	"engine/infrastructure/config"
-	"engine/internal/core/usecase/schedule"
+	"engine/infrastructure/pg"
+	"engine/infrastructure/zap"
+	"engine/internal/adapter/cryptographer"
+	"engine/internal/adapter/logger"
 	"engine/internal/core/usecase/user"
+
 	"engine/internal/delivery/http"
-	"engine/internal/mock/repository"
-	"log"
+	"engine/internal/repository"
 )
 
 func main() {
-	config, err := config.New("./config.yaml")
+	// infrastructure
+	config := config.New(".")
+	database := pg.New(config.DBUrl, config.IsDebug)
+	zap := zap.New(config.IsDebug)
 
-	if err != nil {
-		log.Fatal("Error initialize config:", err)
-	}
+	// adapter
+	logger := logger.New(zap)
+	cryptographer := cryptographer.New()
 
-	repository := repository.NewRepositoryManager()
+	// repository
+	repositoryManager := repository.NewRepositoryManager(database, nil)
 
-	scheduleUseCase := schedule.NewScheduleUseCase(repository)
-	userUseCase := user.NewUserUseCase(repository)
-
-	server, err := http.NewHttpServer(
-		config,
-		scheduleUseCase,
-		userUseCase,
+	// core
+	userUseCase := user.New(
+		repositoryManager,
+		cryptographer,
+		logger,
 	)
 
-	if err != nil {
-		log.Fatal("Error initialize server:", err)
-	}
-
-	if err := server.Start(); err != nil {
-		log.Fatal("Server error:", err)
-	}
+	// delivery
+	httpServer := http.New(
+		!config.IsDebug,
+		config.Port,
+		userUseCase,
+	)
+	httpServer.Run()
 }

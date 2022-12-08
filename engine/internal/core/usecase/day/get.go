@@ -5,7 +5,7 @@ import (
 	"errors"
 )
 
-func (usecase *useCase) Get(id int) (*entity.User, error) {
+func (usecase *useCase) Get(id int) (*entity.Day, error) {
 	userRepo := usecase.repository.GetUserRepository()
 
 	user, err := userRepo.Get(id)

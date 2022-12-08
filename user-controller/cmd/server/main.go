@@ -6,10 +6,10 @@ import (
 	"user-controller/infrastructure/zap"
 	"user-controller/internal/adapter/cryptographer"
 	"user-controller/internal/adapter/logger"
+	"user-controller/internal/adapter/repository"
 	"user-controller/internal/core/usecase/user"
 
 	"user-controller/internal/delivery/http"
-	"user-controller/internal/repository"
 )
 
 func main() {

@@ -1,51 +1,41 @@
 package http
 
 import (
-	"engine/infrastructure/config"
-	"engine/internal/core/interfaces"
-	"engine/internal/delivery/http/internal/schedule"
-	"engine/internal/delivery/http/internal/user"
 	"fmt"
-	"net/http"
 
-	"github.com/gorilla/mux"
+	"engine/internal/core/interfaces"
+
+	"github.com/gin-gonic/gin"
 )
 
-type HttpServer struct {
-	port   int
-	router *mux.Router
+type httpServer struct {
+	port        int
+	router      *gin.Engine
+	userUseCase interfaces.UserUseCase
 }
 
-func NewHttpServer(
-	config config.Config,
-	scheduleUseCase interfaces.ScheduleUseCase,
+func New(
+	isProduction bool,
+	port int,
 	userUseCase interfaces.UserUseCase,
-) (*HttpServer, error) {
-	router := mux.NewRouter()
-
-	userHandlers := user.NewHandlers(userUseCase)
-
-	router.HandleFunc("/user/login", userHandlers.Login).Methods(http.MethodPost)
-	router.HandleFunc("/user/{login}", userHandlers.Login).Methods(http.MethodPost)
-
-	scheduleHandlers := schedule.NewHandlers(scheduleUseCase)
-
-	router.HandleFunc("/schedule/day", scheduleHandlers.GetByDay).Methods(http.MethodGet)
-	router.HandleFunc("/schedule/upload", scheduleHandlers.UploadNewSchedule).Methods(http.MethodPost)
-
-	if config.IsDebug {
-		router.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
-			tpl, _ := route.GetPathTemplate()
-			met, _ := route.GetMethods()
-			fmt.Println(tpl, met)
-
-			return nil
-		})
+) *httpServer {
+	if isProduction {
+		gin.SetMode(gin.ReleaseMode)
 	}
 
-	return &HttpServer{port: config.Port, router: router}, nil
+	if port == 0 {
+		port = 8080
+	}
+
+	s := &httpServer{
+		router:      gin.Default(),
+		userUseCase: userUseCase,
+		port:        port,
+	}
+	s.SetRoutes()
+	return s
 }
 
-func (s *HttpServer) Start() error {
-	return http.ListenAndServe(fmt.Sprintf(":%d", s.port), s.router)
+func (s *httpServer) Run() {
+	s.router.Run(fmt.Sprintf(":%d", s.port))
 }
