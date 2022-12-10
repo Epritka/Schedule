@@ -23,6 +23,7 @@ func New(
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+	// TODO move to Config
 	if port == 0 {
 		port = 2513
 	}
