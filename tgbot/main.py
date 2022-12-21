@@ -43,7 +43,7 @@ class Form(StatesGroup):
 
 @dp.message_handler(commands="help")
 async def show_help_message(message: types.Message):
-    await message.answer(text=f"Этот бот позволяет смотреть расписание вашего любимого университета♥")
+    await message.answer(text=f"Этот бот позволяет смотреть расписание вашего любимого университета ♥")
 
 
 @dp.message_handler(commands=["start"])
