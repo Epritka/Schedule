@@ -35,44 +35,30 @@ func (r *userRepository) Get(id int) (entity.User, error) {
 	return user.Entity(), nil
 }
 
-func (r *userRepository) GetByUsername(username string, sourceId int) (entity.User, error) {
+func (r *userRepository) GetByTelegramUserId(tgId int) (*entity.User, error) {
 	user := model.User{}
 
 	query := r.DB.Model(&user).
 		Relation("Roles").
 		Relation("AuthSource").
-		Where("email = ?", username)
-
-	if sourceId != 0 {
-		query = query.Where("auth_source_id = ?", sourceId)
-	}
+		Where("telegram_user_id = ?", tgId)
 
 	err := query.
 		Order("id ASC").
 		Select()
+
 	if err != nil {
-		return user.Entity(), err
+		return nil, err
 	}
-	return user.Entity(), nil
+
+	userEntity := user.Entity()
+
+	return &userEntity, nil
 }
 
-func (r *userRepository) GetList(filters entity.UserFilters) ([]entity.User, int, error) {
+func (r *userRepository) GetList() ([]entity.User, int, error) {
 	list := model.UserList{}
-	query := r.DB.Model(&list).
-		Relation("AuthSource").
-		Relation("Roles")
-
-	if len(filters.Ids) > 0 {
-		query.WhereIn("id in (?)", filters.Ids)
-	}
-
-	if filters.Email != "" {
-		query.Where("email like ?", "%"+filters.Email+"%")
-	}
-
-	if filters.FullName != "" {
-		query.Where("concat_ws(' ', first_name, last_name) like ?", "%"+filters.FullName+"%")
-	}
+	query := r.DB.Model(&list)
 
 	count, err := query.Count()
 	if err != nil {
@@ -80,13 +66,13 @@ func (r *userRepository) GetList(filters entity.UserFilters) ([]entity.User, int
 	}
 
 	err = query.
-		Limit(filters.Limit).
-		Offset(filters.Offset).
 		Order("id ASC").
 		Select()
+
 	if err != nil {
 		return list.Entity(), 0, err
 	}
+
 	return list.Entity(), count, nil
 }
 

@@ -10,7 +10,7 @@ type RepositoryManager interface {
 
 	GetDayRepository() DayRepository
 	// GetGroupRepository() GroupRepository
-	// GetScheduleRepository() ScheduleRepository
+	GetScheduleRepository() ScheduleRepository
 }
 
 type ScheduleRepository interface {

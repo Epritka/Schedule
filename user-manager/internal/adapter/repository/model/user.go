@@ -12,12 +12,6 @@ type User struct {
 
 	Id             int
 	TelegramUserId int
-	Email          string
-	FirstName      string
-	LastName       string
-	Password       string
-	IsSuperuser    bool `pg:",use_zero" sql:",notnull"`
-	IsActive       bool `pg:",use_zero" sql:",notnull"`
 }
 
 func NewUser(value entity.User) User {

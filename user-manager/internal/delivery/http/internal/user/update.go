@@ -11,9 +11,7 @@ import (
 )
 
 type updateRequest struct {
-	Email     string `json:"email" validate:"required,email,max=100"`
-	FirstName string `json:"firstName" validate:"required,max=100"`
-	LastName  string `json:"lastName" validate:"required,max=100"`
+	TelegramUserId int `json:"telegramUserId" validate:"required"`
 }
 
 func (handlers *handlers) Update(c *gin.Context) {
@@ -40,13 +38,13 @@ func (handlers *handlers) Update(c *gin.Context) {
 
 	user, err := handlers.userUseCase.Update(
 		id,
-		request.Email,
-		request.FirstName,
-		request.LastName,
+		request.TelegramUserId,
 	)
+
 	if err != nil {
 		c.JSON(serializers.BadRequestHttpResponce(err, nil))
 		return
 	}
+
 	c.JSON(serializers.SuccessHttpResponce(user))
 }

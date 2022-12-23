@@ -10,7 +10,7 @@ func (s *httpServer) SetRoutes() {
 	apiV1 := s.router.Group("/api/v1/")
 	{
 
-		user := apiV1.Group("/users/")
+		user := apiV1.Group("/user/")
 		{
 			user.GET("/", userHandlers.GetList)
 			user.POST("/", userHandlers.Create)

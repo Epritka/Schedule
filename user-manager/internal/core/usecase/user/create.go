@@ -4,30 +4,19 @@ import (
 	"user-manager/internal/core/entity"
 )
 
-func (usecase *useCase) Create(email, password, firstName, lastName string) (entity.User, error) {
+func (usecase *useCase) Create(tgUserId int) (entity.User, error) {
 	userRepository := usecase.repositoryManager.GetUserRepository()
-	eUser, _ := userRepository.GetByUsername(email, 0)
-	if eUser.Id != 0 {
+	eUser, _ := userRepository.GetByTelegramUserId(tgUserId)
+
+	if eUser == nil {
 		return entity.User{}, entity.UserAlreadyExistError
 	}
 
 	user := entity.User{
-		Email:     email,
-		FirstName: firstName,
-		LastName:  lastName,
+		TelegramUserId: tgUserId,
 	}
 
-	if !user.ValidPassword(password) {
-		return entity.User{}, entity.InvalidAuthDataError
-	}
-
-	cryptPassword, err := usecase.cryptographer.Encrypt(password)
-	if err != nil {
-		return entity.User{}, entity.InvalidAuthDataError
-	}
-
-	user.Password = cryptPassword
-	err = userRepository.Save(&user)
+	err := userRepository.Save(&user)
 	if err != nil {
 		return entity.User{}, entity.DatabaseError
 	}

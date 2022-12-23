@@ -1,19 +1,18 @@
 package user
 
 import (
+	"fmt"
 	"user-manager/internal/core/entity"
 )
 
-func (usecase *useCase) GetList(filters entity.UserFilters) ([]entity.User, int, error) {
+func (usecase *useCase) GetList() ([]entity.User, int, error) {
 	userRepository := usecase.repositoryManager.GetUserRepository()
 
-	if filters.Limit > 50 {
-		filters.Limit = 50
-	}
-
-	userList, count, err := userRepository.GetList(filters)
+	userList, count, err := userRepository.GetList()
 	if err != nil {
+		fmt.Println(err)
 		return []entity.User{}, 0, entity.DatabaseError
 	}
+
 	return userList, count, nil
 }

@@ -5,9 +5,9 @@ import (
 )
 
 type UserUseCase interface {
-	GetList(filters entity.UserFilters) ([]entity.User, int, error)
+	GetList() ([]entity.User, int, error)
 	Get(id int) (entity.User, error)
-	Create(email, password, firstName, lastName string) (entity.User, error)
-	Update(id int, email, firstName, lastName string) (entity.User, error)
+	Create(telegramUserId int) (entity.User, error)
+	Update(id, telegramUserId int) (entity.User, error)
 	Delete(id int) error
 }
