@@ -24,11 +24,23 @@ DAYS = {
     7: "Воскресенье"
 }
 
-SERVER_URL = "http://127.0.0.1:2513"
+ENGINE_URL = os.getenv("ENGINE_URL")
+ENGINE_GATEWAY = ENGINE_URL + "/api/v1/"
+USER_SERVICE_URL = os.getenv("USER_SERVICE_URL")
+USER_SERVICE_GATEWAY = USER_SERVICE_URL + "/api/v1/"
 users = {}
 
 load_dotenv()
 TG_TOKEN = os.getenv("TG_TOKEN")
+
+response = requests.get(USER_SERVICE_GATEWAY + "user/")
+data = json.loads(response.text)
+user_list = data["data"]
+
+
+response = requests.get(ENGINE_GATEWAY + "student/")
+data = json.loads(response.text)
+student_list = data["data"]
 
 logging.basicConfig(level=logging.INFO)
 bot = Bot(token=TG_TOKEN)
@@ -50,6 +62,10 @@ async def show_help_message(message: types.Message):
 async def show_start_message(message: types.Message):
     await message.answer(f"Привет, {message.from_user.full_name}!",
                          reply_markup=inline_keyboard.DEFAULT)
+    if message.from_user.id not in user_list:
+        requests.post(USER_SERVICE_GATEWAY + "user/", json={
+            "telegramUserId": message.from_user.id
+        })
 
 
 @dp.callback_query_handler(text="login")
@@ -73,7 +89,7 @@ async def process_callback_today(callback_query: types.CallbackQuery):
         "date": str(int(moscow_time.timestamp())),
     }
 
-    response = requests.get(SERVER_URL+"/schedule/day", json=json_data)
+    response = requests.get(ENGINE_GATEWAY + "schedule/day/", json=json_data)
 
     if response.status_code == 200:
         data = json.loads(response.text)["data"]
@@ -115,7 +131,7 @@ async def process_text_group_name(message: types.Message, state: FSMContext):
     await state.finish()
 
     login = str(message.from_user.full_name)
-    response = requests.post(SERVER_URL+"/user/login", json={
+    response = requests.post(USER_SERVICE_URL+"/user/login", json={
         "login": login,
         "groupName": message.text
     })
