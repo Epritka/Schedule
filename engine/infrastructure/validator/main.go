@@ -8,7 +8,7 @@ import (
 )
 
 type Validator interface {
-	Struct(s interface{}) error
+	Struct(s any) error
 	GetErrors(err error) (errors map[string]string)
 	AddCustomValidators(name string, fn pgvalidator.Func) error
 }
@@ -29,7 +29,7 @@ func (v *validator) AddCustomValidators(name string, fn pgvalidator.Func) error 
 	return err
 }
 
-func (v *validator) Struct(s interface{}) error {
+func (v *validator) Struct(s any) error {
 	return v.validate.Struct(s)
 }
 

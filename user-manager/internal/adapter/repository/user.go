@@ -25,10 +25,9 @@ func (r *userRepository) Get(id int) (entity.User, error) {
 		Id: id,
 	}
 	err := r.DB.Model(&user).
-		Relation("Roles").
-		Relation("AuthSource").
 		WherePK().
 		Select()
+
 	if err != nil {
 		return user.Entity(), err
 	}
@@ -39,12 +38,9 @@ func (r *userRepository) GetByTelegramUserId(tgId int) (*entity.User, error) {
 	user := model.User{}
 
 	query := r.DB.Model(&user).
-		Relation("Roles").
-		Relation("AuthSource").
 		Where("telegram_user_id = ?", tgId)
 
 	err := query.
-		Order("id ASC").
 		Select()
 
 	if err != nil {

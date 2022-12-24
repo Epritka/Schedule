@@ -1,16 +1,36 @@
 package model
 
+import (
+	"engine/infrastructure/convert"
+	"engine/internal/core/entity"
+)
+
+type LessonList []Lesson
 type Lesson struct {
-	Id             *int   `json:"id,omitempty"`
-	Time           Time   `json:"time"`
-	Name           string `json:"name"`
-	Type           string `json:"type"`
-	Teacher        string `json:"teacher"`
-	Auditorium     string `json:"auditorium"`
-	SubGroupNumber *int   `json:"subGroupNumber,omitempty"`
+	Id         int
+	DayId      int
+	StartTime  string
+	EndTime    string
+	Name       string
+	Type       string
+	Teacher    string
+	Auditorium string
+	SubGroup   string
 }
 
-type Time struct {
-	Start string `json:"start"`
-	End   string `json:"end"`
+func NewLesson(value entity.Lesson) Lesson {
+	return convert.Convert[entity.Lesson, Lesson](value)
+}
+
+func (value *Lesson) Entity() entity.Lesson {
+	result := convert.DeConvert[Lesson, entity.Lesson](*value)
+	return result
+}
+
+func (list *LessonList) Entity() []entity.Lesson {
+	result := []entity.Lesson{}
+	for _, value := range *list {
+		result = append(result, value.Entity())
+	}
+	return result
 }

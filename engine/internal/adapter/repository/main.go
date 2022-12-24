@@ -69,6 +69,22 @@ func (t *repositoryManager) getConnect() orm.DB {
 	return t.Tx
 }
 
+func (t *repositoryManager) GetEducationalRepository() interfaces.EducationalRepository {
+	return NewEducationalRepository(t.getConnect())
+}
+
+func (t *repositoryManager) GetGroupRepository() interfaces.GroupRepository {
+	return NewGroupRepository(t.getConnect())
+}
+
 func (t *repositoryManager) GetDayRepository() interfaces.DayRepository {
 	return NewDayRepository(t.getConnect())
+}
+
+func (t *repositoryManager) GetLessonRepository() interfaces.LessonRepository {
+	return NewLessonRepository(t.getConnect())
+}
+
+func (t *repositoryManager) GetStudentRepository() interfaces.StudentRepository {
+	return NewStudentRepository(t.getConnect())
 }

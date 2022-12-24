@@ -1,13 +1,7 @@
 package entity
 
 type (
-	WeekType int
-	Weekday  int
-)
-
-const (
-	EvenWeek WeekType = iota
-	OddWeek
+	Weekday int
 )
 
 const (

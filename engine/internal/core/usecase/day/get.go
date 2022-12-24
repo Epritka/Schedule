@@ -21,6 +21,7 @@ func (usecase *useCase) Get(filters entity.DayFilter) (*entity.Day, error) {
 
 	intDate, err := strconv.ParseInt(filters.Date, 10, 64)
 	if err != nil {
+		usecase.logger.Error(err.Error())
 		return nil, err
 	}
 
@@ -28,12 +29,21 @@ func (usecase *useCase) Get(filters entity.DayFilter) (*entity.Day, error) {
 	_, thisWeek := date.ISOWeek()
 	weekDay := getWeekDay(date)
 
-	day, err := dayRepo.Get(entity.WeekType(thisWeek%2), weekDay, filters.GroupId)
-	day.Number = (*int)(&weekDay)
+	wt := ""
 
-	if err != nil {
-		return day, err
+	if thisWeek%2 == 0 {
+		wt = entity.EvenWeek
+	} else {
+		wt = entity.OddWeek
 	}
 
-	return day, nil
+	day, err := dayRepo.GetLessons(wt, weekDay, filters.GroupId)
+	day.Number = (int)(weekDay)
+
+	if err != nil {
+		usecase.logger.Error(err.Error())
+		return nil, err
+	}
+
+	return &day, nil
 }

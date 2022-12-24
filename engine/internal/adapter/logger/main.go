@@ -17,22 +17,22 @@ func New(lw *zap.SugaredLogger) interfaces.Logger {
 	return logger
 }
 
-func (logger *logger) Error(msg string, args ...interface{}) {
+func (logger *logger) Error(msg string, args ...any) {
 	logger.lw.Errorw(msg, args...)
 }
 
-func (logger *logger) Fatal(msg string, args ...interface{}) {
+func (logger *logger) Fatal(msg string, args ...any) {
 	logger.lw.Fatalw(msg, args...)
 }
 
-func (logger *logger) Info(msg string, args ...interface{}) {
+func (logger *logger) Info(msg string, args ...any) {
 	logger.lw.Infow(msg, args...)
 }
 
-func (logger *logger) Warn(msg string, args ...interface{}) {
+func (logger *logger) Warn(msg string, args ...any) {
 	logger.lw.Warnw(msg, args...)
 }
 
-func (logger *logger) Debug(msg string, args ...interface{}) {
+func (logger *logger) Debug(msg string, args ...any) {
 	logger.lw.Debugw(msg, args...)
 }

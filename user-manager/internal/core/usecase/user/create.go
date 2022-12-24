@@ -6,9 +6,13 @@ import (
 
 func (usecase *useCase) Create(tgUserId int) (entity.User, error) {
 	userRepository := usecase.repositoryManager.GetUserRepository()
-	eUser, _ := userRepository.GetByTelegramUserId(tgUserId)
+	eUser, err := userRepository.GetByTelegramUserId(tgUserId)
+	if err != nil {
+		usecase.logger.Error(err.Error())
+		return entity.User{}, entity.DatabaseError
+	}
 
-	if eUser == nil {
+	if eUser != nil {
 		return entity.User{}, entity.UserAlreadyExistError
 	}
 
@@ -16,8 +20,9 @@ func (usecase *useCase) Create(tgUserId int) (entity.User, error) {
 		TelegramUserId: tgUserId,
 	}
 
-	err := userRepository.Save(&user)
+	err = userRepository.Save(&user)
 	if err != nil {
+		usecase.logger.Error(err.Error())
 		return entity.User{}, entity.DatabaseError
 	}
 

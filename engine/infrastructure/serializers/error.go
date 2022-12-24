@@ -5,9 +5,9 @@ type httpError struct {
 	Message string `json:"message"`
 }
 
-func newHttpError(code int, message string, errors map[string]string) (int, map[string]interface{}) {
+func newHttpError(code int, message string, errors map[string]string) (int, map[string]any) {
 	if len(errors) > 0 {
-		return code, map[string]interface{}{
+		return code, map[string]any{
 			"success": false,
 			"error": &httpError{
 				Code:    code,
@@ -17,7 +17,7 @@ func newHttpError(code int, message string, errors map[string]string) (int, map[
 		}
 	}
 
-	return code, map[string]interface{}{
+	return code, map[string]any{
 		"success": false,
 		"error": &httpError{
 			Code:    code,

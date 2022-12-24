@@ -9,7 +9,7 @@ func Convert[TFrom any, TTo any](data TFrom) TTo {
 	v := reflect.ValueOf(data)
 
 	var result TTo
-	fields := make(map[string]interface{}, v.NumField())
+	fields := make(map[string]any, v.NumField())
 
 	for i := 0; i < v.NumField(); i++ {
 		if !isValid(v, i) {

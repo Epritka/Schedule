@@ -5,7 +5,7 @@ import (
 )
 
 // http ответ 400
-func BadRequestHttpResponce(err error, errors map[string]string) (int, interface{}) {
+func BadRequestHttpResponce(err error, errors map[string]string) (int, any) {
 	return newHttpError(
 		http.StatusBadRequest,
 		err.Error(),
@@ -14,7 +14,7 @@ func BadRequestHttpResponce(err error, errors map[string]string) (int, interface
 }
 
 // http ответ 404
-func NotFoundHttpResponce(err error, errors map[string]string) (int, interface{}) {
+func NotFoundHttpResponce(err error, errors map[string]string) (int, any) {
 	return newHttpError(
 		http.StatusNotFound,
 		err.Error(),
@@ -23,14 +23,14 @@ func NotFoundHttpResponce(err error, errors map[string]string) (int, interface{}
 }
 
 // http ответ 200
-func SuccessHttpResponce(data interface{}) (int, map[string]interface{}) {
+func SuccessHttpResponce(data any) (int, map[string]any) {
 	if data == nil {
-		return http.StatusOK, map[string]interface{}{
+		return http.StatusOK, map[string]any{
 			"success": true,
 		}
 	}
 
-	return http.StatusOK, map[string]interface{}{
+	return http.StatusOK, map[string]any{
 		"success": true,
 		"data":    data,
 	}

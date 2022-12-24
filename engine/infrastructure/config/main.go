@@ -37,6 +37,11 @@ func New(path string) (config Config) {
 	}
 	config.ParseDbUrl()
 	viper.WatchConfig()
+
+	if config.Port == 0 {
+		config.Port = 2513
+	}
+
 	return
 }
 
