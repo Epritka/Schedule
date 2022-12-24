@@ -10,40 +10,63 @@ func (usecase *useCase) Save(schedules []entity.Schedule) error {
 	lessonRepository := usecase.repository.GetLessonRepository()
 	dayRepository := usecase.repository.GetDayRepository()
 
+	facultyIds := map[string]int{}
+	educationalIds := map[string]int{}
+	yearIds := map[string]int{}
+	groupIds := map[string]int{}
+
 	for _, schedule := range schedules {
-		ei, err := educationalRepo.SaveEducationalInstitution(schedule.EducationalInstitution.Name)
-		if err != nil {
-			usecase.logger.Error(err.Error())
-			return err
+		if _, find := educationalIds[schedule.EducationalInstitution.Name]; !find {
+			ei, err := educationalRepo.SaveEducationalInstitution(schedule.EducationalInstitution.Name)
+			if err != nil {
+				usecase.logger.Error(err.Error())
+				return err
+			}
+
+			educationalIds[schedule.EducationalInstitution.Name] = ei.Id
 		}
 
-		f, err := educationalRepo.SaveFaculty(schedule.Faculty.Name)
-		if err != nil {
-			usecase.logger.Error(err.Error())
-			return err
+		if _, find := facultyIds[schedule.Faculty.Name]; !find {
+			f, err := educationalRepo.SaveFaculty(schedule.Faculty.Name)
+			if err != nil {
+				usecase.logger.Error(err.Error())
+				return err
+			}
+
+			facultyIds[schedule.Faculty.Name] = f.Id
 		}
 
-		y, err := educationalRepo.SaveYear(schedule.Year.Name)
-		if err != nil {
-			usecase.logger.Error(err.Error())
-			return err
+		if _, find := yearIds[schedule.Year.Name]; !find {
+			y, err := educationalRepo.SaveYear(schedule.Year.Name)
+			if err != nil {
+				usecase.logger.Error(err.Error())
+				return err
+			}
+
+			yearIds[schedule.Year.Name] = y.Id
 		}
 
-		group := entity.Group{
-			Name:                     schedule.Group.Name,
-			EducationalInstitutionId: ei.Id,
-			FacultyId:                f.Id,
-			YearId:                   y.Id,
+		if _, find := groupIds[schedule.Group.Name]; !find {
+			group := entity.Group{
+				Name:                     schedule.Group.Name,
+				EducationalInstitutionId: educationalIds[schedule.EducationalInstitution.Name],
+				FacultyId:                facultyIds[schedule.Faculty.Name],
+				YearId:                   yearIds[schedule.Year.Name],
+			}
+
+			g, err := groupRepository.Save(&group)
+			if err != nil {
+				usecase.logger.Error(err.Error())
+				return err
+			}
+
+			groupIds[schedule.Group.Name] = g.Id
 		}
 
-		g, err := groupRepository.Save(&group)
-		if err != nil {
-			usecase.logger.Error(err.Error())
-			return err
-		}
+		groupId := groupIds[schedule.Group.Name]
 
 		for _, day := range schedule.EvenWeek {
-			d, err := dayRepository.Save(entity.EvenWeek, day.Number, g.Id)
+			d, err := dayRepository.Save(entity.EvenWeek, day.Number, groupId)
 			if err != nil {
 				usecase.logger.Error(err.Error())
 				return err
@@ -70,7 +93,7 @@ func (usecase *useCase) Save(schedules []entity.Schedule) error {
 		}
 
 		for _, day := range schedule.OddWeek {
-			d, err := dayRepository.Save(entity.OddWeek, day.Number, g.Id)
+			d, err := dayRepository.Save(entity.OddWeek, day.Number, groupId)
 			if err != nil {
 				usecase.logger.Error(err.Error())
 				return err

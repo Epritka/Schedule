@@ -22,22 +22,30 @@ func (r *dayRepository) GetLessons(
 	weekType string,
 	weekDay entity.Weekday,
 	groupId int,
-) (entity.Day, error) {
+) (*entity.Day, error) {
 
 	day := model.Day{}
 
 	query := r.DB.Model(&day).
-		Relation("Lesson").
-		Where("group_id like ?", groupId).
-		Where("week_type like ?", weekDay).
-		Where("number like ?", weekDay)
+		Relation("Lessons").
+		Where("group_id = ?", groupId).
+		Where("week_type = ?", weekType).
+		Where("number = ?", weekDay)
 
 	err := query.Select()
+
 	if err != nil {
-		return day.Entity(), err
+		if err != nil {
+			if err.Error() == "pg: no rows in result set" {
+				return nil, nil
+			}
+
+			return nil, err
+		}
 	}
 
-	return day.Entity(), nil
+	d := day.Entity()
+	return &d, nil
 }
 
 func (r *dayRepository) Save(weekType string, number, groupId int) (*entity.Day, error) {

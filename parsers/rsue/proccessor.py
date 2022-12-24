@@ -8,6 +8,15 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 RSUE_URL = "https://rsue.ru/raspisanie/"
 
+DAYS = {
+    "Понедельник": 1,
+    "Вторник": 2,
+    "Среда": 3,
+    "Четверг": 4,
+    "Пятница": 5,
+    "Суббота": 6,
+}
+
 
 def send_request(url: str, data):
     try:
@@ -20,7 +29,6 @@ def fill_schedule_from_page(page, schedule: dto.ScheduleDTO):
     container = BS(page, "lxml").find("div", {"id": "content"}).find_all(
         "div", {"class": "container"})[1]
 
-    day_number = 1
     week_type = 1
     for child in container.children:
         if child.name == "h1":
@@ -29,14 +37,22 @@ def fill_schedule_from_page(page, schedule: dto.ScheduleDTO):
 
         if child.name == "div":
             for d in child.children:
+                week_day_name = d.find("div", {"id": "nedelya"})
+                if week_day_name == None:
+                    week_day_name = d.find("div", {"id": "nedelya-select"})
+                if week_day_name == None:
+                    continue
+
+                print(week_day_name.text)
                 lessons = d.find_all("div", {"class": "day"})
 
-                day = dto.DayDTO(day_number)
+                day = dto.DayDTO(DAYS[week_day_name.text])
 
                 for l in lessons:
                     info = l.find_all("span")
 
-                    time = str(info[0].contents[0]).replace(" ", "").split("—")
+                    time = str(info[0].contents[0]).replace(
+                        " ", "").split("—")
 
                     lesson = dto.LessonDTO(
                         str(time[0]),
@@ -56,16 +72,12 @@ def fill_schedule_from_page(page, schedule: dto.ScheduleDTO):
 
                     day.Lessons.append(lesson)
 
-                if day_number == 6:
-                    day_number = 1
-                    if week_type == 0:
-                        schedule.EvenWeek.append(day)
-                        week_type = 1
-                    else:
-                        schedule.OddWeek.append(day)
-                        week_type = 0
+                if week_type == 0:
+                    schedule.EvenWeek.append(day)
+                    week_type = 1
                 else:
-                    day_number += 1
+                    schedule.OddWeek.append(day)
+                    week_type = 0
 
 
 def parse_schedule_page():
@@ -109,7 +121,6 @@ def parse_schedule_page():
             )
 
             for g in json.loads(response.text):
-
                 group_id = g["category_id"]
                 group_name = g["category"]
 
@@ -122,5 +133,7 @@ def parse_schedule_page():
 
                 fill_schedule_from_page(response.text, schedule)
                 schedules.append(schedule.to_dict())
-
+                break
+            break
+        break
     return schedules

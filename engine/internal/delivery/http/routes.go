@@ -27,7 +27,7 @@ func (s *httpServer) SetRoutes() {
 
 		group := apiV1.Group("/group/")
 		{
-			group.GET("/", groupHandlers.GetByName)
+			group.GET("/:name/", groupHandlers.GetByName)
 		}
 
 		student := apiV1.Group("/student/")

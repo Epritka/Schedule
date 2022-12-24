@@ -69,7 +69,7 @@ func (r *groupRepository) GetByName(name string) (*entity.Group, error) {
 	model := model.Group{}
 
 	err := r.DB.Model(&model).
-		Where("name like ?", name).
+		Where("name = ?", name).
 		Select()
 
 	if err != nil {

@@ -12,7 +12,7 @@
 #     while True:
 #         try:
 #          response = requests.patch(
-#             f"http://{server_host}/schedule/upload", json=schedules)
+#             f"http://{server_host}/schedule/", json=schedules)
 #         except Exception as e:
 #             print("failed to send:", e)
 #             sleep(5)

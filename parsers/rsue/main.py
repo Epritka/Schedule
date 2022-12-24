@@ -13,9 +13,9 @@ if __name__ == "__main__":
     schedules = proccessor.parse_schedule_page()
 
     file = open("rsue.json", "w+", encoding="utf-8")
-    file.write(json.dumps(schedules))
+    file.write(json.dumps(schedules, ensure_ascii=False))
     file.close()
-    
+
     print("sending schedules...")
     while True:
         try:

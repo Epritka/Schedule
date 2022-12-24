@@ -33,7 +33,7 @@ type LessonRepository interface {
 
 type DayRepository interface {
 	Save(weekType string, number, groupId int) (*entity.Day, error)
-	GetLessons(weekType string, weekDay entity.Weekday, groupId int) (entity.Day, error)
+	GetLessons(weekType string, weekDay entity.Weekday, groupId int) (*entity.Day, error)
 }
 
 type StudentRepository interface {

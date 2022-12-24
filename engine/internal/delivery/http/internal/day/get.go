@@ -3,19 +3,19 @@ package day
 import (
 	"engine/infrastructure/serializers"
 	"engine/internal/core/entity"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 )
 
 type DayFilters struct {
-	GroupId int    `json:"groupId"`
-	Date    string `json:"date"`
+	GroupId int    `form:"groupId"`
+	Date    string `form:"date"`
 }
 
 func (handlers *handlers) Get(c *gin.Context) {
 	var filters DayFilters
-
-	c.BindQuery(&filters)
+	c.ShouldBindQuery(&filters)
 
 	day, err := handlers.dayUseCase.Get(
 		entity.DayFilter{
@@ -26,8 +26,13 @@ func (handlers *handlers) Get(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(serializers.BadRequestHttpResponce(err, nil))
+		return
 	}
 
-	code, data := serializers.SuccessHttpResponce(day)
-	c.JSON(code, data)
+	if day == nil {
+		c.JSON(serializers.NotFoundHttpResponce(fmt.Errorf("lessons not found"), nil))
+		return
+	}
+
+	c.JSON(serializers.SuccessHttpResponce(day))
 }
