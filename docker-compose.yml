@@ -10,6 +10,7 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - psql:/var/lib/postgresql/data:rw
+      - ./psql/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     ports:
       - 5432:5432
 
@@ -17,6 +18,7 @@ services:
     build:
       context: engine
       dockerfile: deploy/Dockerfile
+    command: sh -c "./scripts/wait-for.sh psql-db:5432 && ./bin/migrate up && ./bin/server"
     volumes:
       - ./engine/.env:/go/src/app/.env
     ports:
@@ -24,15 +26,17 @@ services:
     depends_on:
       - psql-db
 
-  # user-controller:
-  #   container_name: user-controller
-  #   pull_policy: always
-  #   restart: always
-  #   command: sh -c "./scripts/wait-for.sh psql-db:5432 && ./bin/migrate up && ./bin/server"
-  #   volumes:
-  #     - /etc/tie/cc/env.user-controller:/go/src/app/.env
-  #   depends_on:
-  #     - psql-db
+  user-manager:
+    build:
+      context: user-manager
+      dockerfile: deploy/Dockerfile
+    command: sh -c "./scripts/wait-for.sh psql-db:5432 && ./bin/migrate up && ./bin/server"
+    volumes:
+      - ./user-manager/.env:/go/src/app/.env
+    ports:
+      - 8080
+    depends_on:
+      - psql-db
 
 volumes:
   psql:
